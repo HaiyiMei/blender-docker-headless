@@ -2,7 +2,9 @@ FROM nvidia/cuda:11.7.1-cudnn8-devel-ubuntu20.04
 
 ENV DEBIAN_FRONTEND=noninteractive
 ENV NVIDIA_VISIBLE_DEVICES all
-ENV NVIDIA_DRIVER_CAPABILITIES compute,utility,video
+ENV NVIDIA_DRIVER_CAPABILITIES all
+ENV EGL_DRIVER=nvidia
+ENV __EGL_VENDOR_LIBRARY_DIRS=/usr/share/glvnd/egl_vendor.d
 
 # Update and install dependencies
 RUN apt-get update && apt-get install -y apt-utils
@@ -46,10 +48,13 @@ RUN apt-get install -y --no-install-recommends --fix-missing \
     xvfb
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# Install Blender
-RUN wget https://mirror.clarkson.edu/blender/release/Blender3.6/blender-3.6.18-linux-x64.tar.xz -O /tmp/blender.tar.xz \
+# Add build argument for Blender version
+ARG BLENDER_VERSION=3.6.18
+
+# Update Blender installation to use the version argument
+RUN wget https://mirror.clarkson.edu/blender/release/Blender${BLENDER_VERSION%.*}/blender-${BLENDER_VERSION}-linux-x64.tar.xz -O /tmp/blender.tar.xz \
     && tar -xvf /tmp/blender.tar.xz -C /opt/ \
-    && mv /opt/blender-3.6.18-linux-x64 /opt/blender \
+    && mv /opt/blender-${BLENDER_VERSION}-linux-x64 /opt/blender \
     && rm /tmp/blender.tar.xz
 
 # Set Blender path
