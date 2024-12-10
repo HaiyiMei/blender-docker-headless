@@ -52,10 +52,11 @@ ARG BLENDER_VERSION=3.6.18
 ARG BLENDER_MIRROR_URL=https://mirror.clarkson.edu/blender/release
 
 # Update Blender installation to use both arguments
-RUN wget ${BLENDER_MIRROR_URL}/Blender${BLENDER_VERSION%.*}/blender-${BLENDER_VERSION}-linux-x64.tar.xz -O /tmp/blender.tar.xz \
-    && tar -xvf /tmp/blender.tar.xz -C /opt/ \
-    && mv /opt/blender-${BLENDER_VERSION}-linux-x64 /opt/blender \
-    && rm /tmp/blender.tar.xz
+RUN wget --no-verbose --show-progress --progress=dot:giga \
+    ${BLENDER_MIRROR_URL}/Blender${BLENDER_VERSION%.*}/blender-${BLENDER_VERSION}-linux-x64.tar.xz -O /tmp/blender.tar.xz \
+        && tar -xvf /tmp/blender.tar.xz -C /opt/ \
+        && mv /opt/blender-${BLENDER_VERSION}-linux-x64 /opt/blender \
+        && rm /tmp/blender.tar.xz
 
 # Set Blender path
 ENV PATH="/opt/blender:$PATH"
