@@ -7,9 +7,9 @@ on:
       - dev
 
 env:
-  REGISTRY: ${{ secrets.DOCKERHUB_USERNAME }}
-  IMAGE_NAME: ${{ secrets.DOCKERHUB_REPO }}
-  BLENDER_MIRROR_URL: ${{ secrets.BLENDER_MIRROR_URL }}
+  REGISTRY: meihaiyi
+  IMAGE_NAME: blender
+  BLENDER_MIRROR_URL: https://mirror.clarkson.edu/blender/release
 
 jobs:
   build-and-push:
