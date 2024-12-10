@@ -1,21 +1,5 @@
 import bpy
 
-
-def enable_gpu(device_type: str = "CUDA") -> None:
-    preferences = bpy.context.preferences
-    cycles_preferences = preferences.addons["cycles"].preferences
-    cycles_preferences.refresh_devices()
-    devices = cycles_preferences.get_devices_for_type(compute_device_type=device_type)
-    for device in devices:
-        print(f"Enabling device: {device.name}")
-        device.use = True
-    cycles_preferences.compute_device_type = device_type
-    bpy.context.scene.cycles.device = "GPU"
-
-
-# Enable GPU rendering
-enable_gpu()
-
 # Set the rendering engine to Eevee
 bpy.context.scene.render.engine = "BLENDER_EEVEE"
 
