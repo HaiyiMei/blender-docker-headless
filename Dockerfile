@@ -1,10 +1,9 @@
+ARG UBUNTU_VERSION=20.04
 FROM nvidia/cuda:11.7.1-cudnn8-devel-ubuntu${UBUNTU_VERSION}
 
 ENV DEBIAN_FRONTEND=noninteractive
 ENV NVIDIA_VISIBLE_DEVICES all
 ENV NVIDIA_DRIVER_CAPABILITIES all
-ENV EGL_DRIVER=nvidia
-ENV __EGL_VENDOR_LIBRARY_DIRS=/usr/share/glvnd/egl_vendor.d
 
 # Update and install dependencies
 RUN apt-get update && apt-get install -y apt-utils
@@ -77,3 +76,6 @@ RUN git clone https://github.com/NVIDIA/libglvnd.git /tmp/libglvnd \
     }" > /usr/share/glvnd/egl_vendor.d/10_nvidia.json \
     && cd / \
     && rm -rf /tmp/libglvnd
+
+ENV EGL_DRIVER=nvidia
+ENV __EGL_VENDOR_LIBRARY_DIRS=/usr/share/glvnd/egl_vendor.d
