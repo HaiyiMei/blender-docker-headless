@@ -7,9 +7,9 @@ on:
       - dev
 
 env:
-  REGISTRY: meihaiyi
-  IMAGE_NAME: blender
-  BLENDER_MIRROR_URL: https://mirror.clarkson.edu/blender/release
+  REGISTRY: ${{ secrets.DOCKERHUB_USERNAME }}
+  IMAGE_NAME: ${{ secrets.DOCKERHUB_REPO }}
+  BLENDER_MIRROR_URL: ${{ secrets.BLENDER_MIRROR_URL }}
 
 jobs:
   build-and-push:
@@ -61,11 +61,11 @@ jobs:
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
 
-      - name: Build Docker image
+      - name: Build and push Docker image
         uses: docker/build-push-action@v5
         with:
           context: .
-          push: false
+          push: true
           tags: |
             ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:blender-${{ matrix.blender_version.short }}-${{ matrix.ubuntu_cuda_version.short }}
           build-args: |
@@ -74,16 +74,3 @@ jobs:
             BLENDER_MIRROR_URL=${{ env.BLENDER_MIRROR_URL }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
-
-      - name: Run tests
-        run: |
-          docker run --rm ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:blender-${{ matrix.blender_version.short }}-${{ matrix.ubuntu_cuda_version.short }} /tests/render_eevee.py
-          docker run --rm ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:blender-${{ matrix.blender_version.short }}-${{ matrix.ubuntu_cuda_version.short }} /tests/render_cycles.py
-
-      - name: Push Docker image
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          push: true
-          tags: |
-            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:blender-${{ matrix.blender_version.short }}-${{ matrix.ubuntu_cuda_version.short }}
