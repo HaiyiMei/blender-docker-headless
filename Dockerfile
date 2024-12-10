@@ -15,12 +15,8 @@ RUN apt-get update && apt-get -q install -y --no-install-recommends --fix-missin
     git \
     libbz2-dev \
     libegl1 \
-    libegl1-mesa \
-    libegl-dev \
-    libegl1-mesa-dev \
     libfontconfig1 \
-    libgl1-mesa-glx \
-    libgles2-mesa-dev \
+    libgl1 \
     libglvnd-dev \
     libgtk-3-0 \
     libsm6 \
