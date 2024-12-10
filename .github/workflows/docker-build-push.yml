@@ -66,6 +66,7 @@ jobs:
         with:
           context: .
           push: true
+          provenance: false
           tags: |
             ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:blender-${{ matrix.blender_version.short }}-${{ matrix.ubuntu_cuda_version.short }}
           build-args: |
