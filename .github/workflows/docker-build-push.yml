@@ -8,8 +8,8 @@ on:
 
 env:
   REGISTRY: ${{ secrets.DOCKERHUB_USERNAME }}
-  IMAGE_NAME: blender
-  BLENDER_MIRROR_URL: https://mirror.clarkson.edu/blender/release
+  IMAGE_NAME: ${{ secrets.DOCKERHUB_REPO }}
+  BLENDER_MIRROR_URL: ${{ secrets.BLENDER_MIRROR_URL }}
 
 jobs:
   build-and-push:
@@ -24,8 +24,18 @@ jobs:
           - { version: "4.1.1", short: "4.1" }
           - { version: "4.2.4", short: "4.2" }
           - { version: "4.3.0", short: "4.3" }
-        ubuntu_version: ["20.04", "22.04"]
-    
+        ubuntu_cuda_version:
+          - { version: "11.7.1-cudnn8-devel-ubuntu20.04", short: "cuda11.7.1-ubuntu20.04" }
+          - { version: "11.7.1-cudnn8-devel-ubuntu22.04", short: "cuda11.7.1-ubuntu22.04" }
+          - { version: "11.8.0-cudnn8-devel-ubuntu20.04", short: "cuda11.8.0-ubuntu20.04" }
+          - { version: "11.8.0-cudnn8-devel-ubuntu22.04", short: "cuda11.8.0-ubuntu22.04" }
+          - { version: "12.1.1-cudnn8-devel-ubuntu20.04", short: "cuda12.1.1-ubuntu20.04" }
+          - { version: "12.1.1-cudnn8-devel-ubuntu22.04", short: "cuda12.1.1-ubuntu22.04" }
+          - { version: "12.4.1-cudnn-devel-ubuntu20.04", short: "cuda12.4.1-ubuntu20.04" }
+          - { version: "12.4.1-cudnn-devel-ubuntu22.04", short: "cuda12.4.1-ubuntu22.04" }
+          - { version: "12.6.3-cudnn-devel-ubuntu20.04", short: "cuda12.6.3-ubuntu20.04" }
+          - { version: "12.6.3-cudnn-devel-ubuntu22.04", short: "cuda12.6.3-ubuntu22.04" }
+          - { version: "12.6.3-cudnn-devel-ubuntu24.04", short: "cuda12.6.3-ubuntu24.04" }
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -57,33 +67,23 @@ jobs:
           context: .
           push: false
           tags: |
-            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:blender-${{ matrix.blender_version.short }}-ubuntu-${{ matrix.ubuntu_version }}
-            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:blender-${{ matrix.blender_version.version }}-ubuntu-${{ matrix.ubuntu_version }}
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:blender-${{ matrix.blender_version.short }}-${{ matrix.ubuntu_cuda_version.short }}
           build-args: |
             BLENDER_VERSION=${{ matrix.blender_version.version }}
-            UBUNTU_VERSION=${{ matrix.ubuntu_version }}
+            UBUNTU_CUDA_VERSION=${{ matrix.ubuntu_cuda_version.version }}
             BLENDER_MIRROR_URL=${{ env.BLENDER_MIRROR_URL }}
-          labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
-          cache-to: type=gha,mode=max 
+          cache-to: type=gha,mode=max
 
       - name: Run tests
         run: |
-          docker run --rm ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:blender-${{ matrix.blender_version.short }}-ubuntu-${{ matrix.ubuntu_version }} /tests/render_eevee.py
-          docker run --rm ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:blender-${{ matrix.blender_version.short }}-ubuntu-${{ matrix.ubuntu_version }} /tests/render_cycles.py
+          docker run --rm ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:blender-${{ matrix.blender_version.short }}-${{ matrix.ubuntu_cuda_version.short }} /tests/render_eevee.py
+          docker run --rm ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:blender-${{ matrix.blender_version.short }}-${{ matrix.ubuntu_cuda_version.short }} /tests/render_cycles.py
 
-    #   - name: Push Docker image
-    #     if: success()
-    #     uses: docker/build-push-action@v5
-    #     with:
-    #       context: .
-    #       push: true
-    #       tags: |
-    #         ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:blender-${{ matrix.blender_version.short }}-ubuntu-${{ matrix.ubuntu_version }}
-    #       build-args: |
-    #         BLENDER_VERSION=${{ matrix.blender_version.version }}
-    #         UBUNTU_VERSION=${{ matrix.ubuntu_version }}
-    #         BLENDER_MIRROR_URL=${{ env.BLENDER_MIRROR_URL }}
-    #       labels: ${{ steps.meta.outputs.labels }}
-    #       cache-from: type=gha
-    #       cache-to: type=gha,mode=max 
+      - name: Push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: |
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:blender-${{ matrix.blender_version.short }}-${{ matrix.ubuntu_cuda_version.short }}

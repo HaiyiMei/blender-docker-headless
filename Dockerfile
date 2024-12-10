@@ -1,5 +1,7 @@
-ARG UBUNTU_VERSION=20.04
-FROM nvidia/cuda:11.7.1-cudnn8-devel-ubuntu${UBUNTU_VERSION}
+ARG UBUNTU_CUDA_VERSION=11.7.1-cudnn8-devel-ubuntu20.04
+ARG BLENDER_VERSION=3.6.18
+ARG BLENDER_MIRROR_URL=https://mirror.clarkson.edu/blender/release
+FROM nvidia/cuda:$UBUNTU_CUDA_VERSION
 
 ENV DEBIAN_FRONTEND=noninteractive
 ENV NVIDIA_VISIBLE_DEVICES all
@@ -46,10 +48,6 @@ RUN apt-get -q install -y --no-install-recommends --fix-missing \
     x11proto-gl-dev \
     xvfb
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
-
-# Add build arguments
-ARG BLENDER_VERSION=3.6.18
-ARG BLENDER_MIRROR_URL=https://mirror.clarkson.edu/blender/release
 
 # Update Blender installation to use both arguments
 RUN wget --no-verbose --show-progress --progress=dot:giga \
