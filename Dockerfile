@@ -44,6 +44,7 @@ RUN apt-get -q install -y --no-install-recommends --fix-missing \
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Update Blender installation to use both arguments
+RUN echo "Blender URL: ${BLENDER_MIRROR_URL}/Blender${BLENDER_VERSION%.*}/blender-${BLENDER_VERSION}-linux-x64.tar.xz"
 RUN wget --no-verbose --show-progress --progress=dot:giga \
     ${BLENDER_MIRROR_URL}/Blender${BLENDER_VERSION%.*}/blender-${BLENDER_VERSION}-linux-x64.tar.xz -O /tmp/blender.tar.xz \
         && tar -xf /tmp/blender.tar.xz -C /opt/ \
