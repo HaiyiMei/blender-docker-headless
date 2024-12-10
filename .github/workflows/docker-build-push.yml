@@ -13,7 +13,7 @@ env:
 
 jobs:
   build-and-push:
-    runs-on: [gpu]
+    runs-on: ubuntu-latest
     strategy:
       matrix:
         blender_version:
