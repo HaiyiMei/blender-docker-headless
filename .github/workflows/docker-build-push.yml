@@ -7,7 +7,7 @@ on:
       - dev
 
 env:
-  REGISTRY: meihaiyi
+  REGISTRY: ${{ secrets.DOCKERHUB_USERNAME }}
   IMAGE_NAME: blender
   BLENDER_MIRROR_URL: https://mirror.clarkson.edu/blender/release
 

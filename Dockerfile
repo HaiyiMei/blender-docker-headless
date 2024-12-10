@@ -7,7 +7,7 @@ ENV NVIDIA_DRIVER_CAPABILITIES all
 
 # Update and install dependencies
 RUN apt-get update && apt-get install -y apt-utils
-RUN apt-get install -y --no-install-recommends --fix-missing \
+RUN apt-get -q install -y --no-install-recommends --fix-missing \
     automake \
     autoconf \
     build-essential \
@@ -41,7 +41,7 @@ RUN apt-get install -y --no-install-recommends --fix-missing \
     wget \
     python3 \
     python3-pip
-RUN apt-get install -y --no-install-recommends --fix-missing \
+RUN apt-get -q install -y --no-install-recommends --fix-missing \
     x11proto-dev \
     x11proto-gl-dev \
     xvfb
@@ -54,7 +54,7 @@ ARG BLENDER_MIRROR_URL=https://mirror.clarkson.edu/blender/release
 # Update Blender installation to use both arguments
 RUN wget --no-verbose --show-progress --progress=dot:giga \
     ${BLENDER_MIRROR_URL}/Blender${BLENDER_VERSION%.*}/blender-${BLENDER_VERSION}-linux-x64.tar.xz -O /tmp/blender.tar.xz \
-        && tar -xvf /tmp/blender.tar.xz -C /opt/ \
+        && tar -xf /tmp/blender.tar.xz -C /opt/ \
         && mv /opt/blender-${BLENDER_VERSION}-linux-x64 /opt/blender \
         && rm /tmp/blender.tar.xz
 
