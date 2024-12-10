@@ -8,14 +8,12 @@ ENV NVIDIA_VISIBLE_DEVICES all
 ENV NVIDIA_DRIVER_CAPABILITIES all
 
 # Update and install dependencies
-RUN apt-get update && apt-get install -y apt-utils
-RUN apt-get -q install -y --no-install-recommends --fix-missing \
+RUN apt-get update && apt-get -q install -y --no-install-recommends --fix-missing \
     automake \
     autoconf \
     build-essential \
-    curl \
     git \
-    libbz2-1.0 \
+    libbz2-dev \
     libegl1 \
     libegl1-mesa \
     libegl-dev \
